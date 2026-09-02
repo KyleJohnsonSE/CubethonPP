@@ -10,10 +10,10 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnCollisionEnter (Collision collisionInfo)
     {
-        // Stops player movement when colliding with an obstacle
+        // Ends the game when colliding with an obstacle
         if (collisionInfo.collider.tag == "Obstacle")
         {
-            gameManager.EndGame(false);
+            gameManager.ResetGame();
         }
     }
 }

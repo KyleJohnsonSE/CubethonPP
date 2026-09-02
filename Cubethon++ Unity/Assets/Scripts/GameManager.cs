@@ -1,81 +1,114 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
-    public InputActionAsset InputActions;
     private InputAction moveAction;
 
+    private TitleAndScoreDisplay scoreDisplay;
     private PlayerMovement playerMovement;
     private CameraFollow cameraFollow;
-    private ScoreDisplay scoreDisplay;
 
-    private Vector3 startPos;
-    private int score = 0;
-    private int topScore = 0;
-
-    private bool gameStopped = true;
+    private ScoreHandler scoreHandler;
+    private ResetHandler resetHandler;
 
     private void Start()
     {
-        playerMovement = FindAnyObjectByType<PlayerMovement>();
-        cameraFollow = FindAnyObjectByType<CameraFollow>();
-        scoreDisplay = FindAnyObjectByType<ScoreDisplay>();
-
         moveAction = InputSystem.actions.FindAction("Move");
 
-        playerMovement.enabled = false;
-        startPos = playerMovement.getPos();
-        setTitleScreen(false);
+        scoreDisplay = FindAnyObjectByType<TitleAndScoreDisplay>();
+        playerMovement = FindAnyObjectByType<PlayerMovement>();
+        cameraFollow = FindAnyObjectByType<CameraFollow>();
+
+        scoreHandler = new ScoreHandler(scoreDisplay);
+        resetHandler = new ResetHandler(playerMovement, cameraFollow, scoreHandler);
+
+        resetHandler.InitializeGame();
     }
 
     private void Update()
     {
-        if (gameStopped) {
+        if (!resetHandler.IsResetting()) {
             // Starts the game (again) when the player inputs movement
             Vector2 movementInput = moveAction.ReadValue<Vector2>();
-            if (movementInput.x != 0 || movementInput.y != 0) {
-                gameStopped = false;
-                playerMovement.enabled = true;
-            }
-        } else {
-            int scoreCalc = Mathf.FloorToInt(playerMovement.getPos().z - startPos.z);
-            if (scoreCalc != score) {
-                score = scoreCalc;
-                scoreDisplay.SetScore(score.ToString());
+            if (movementInput.x != 0) {
+                resetHandler.StartGame();
             }
         }
     }
 
-    private void setTitleScreen(bool won) {
-        if (won) {
-            scoreDisplay.SetScore($"Top Score: {topScore}\nYou won!");
-        } else {
-            scoreDisplay.SetScore($"Top Score: {topScore}\nMove to start");
+    public void ResetGame() {
+        StartCoroutine(resetHandler.ResetGame());
+    }
+}
+
+public class ScoreHandler {
+    private TitleAndScoreDisplay scoreDisplay;
+
+    private int score = 0;
+    private int bestScore = 0;
+
+    public ScoreHandler(TitleAndScoreDisplay scoreDisplay) {
+        this.scoreDisplay = scoreDisplay;
+    }
+
+    public void IncrementScore() {
+        score++;
+        scoreDisplay.SetScore(score);
+    }
+
+    public void ResetScore() {
+        if (score > bestScore) {
+            bestScore = score;
+        }
+        score = 0;
+        scoreDisplay.SetTitle();
+    }
+}
+
+public class ResetHandler {
+    private PlayerMovement playerMovement;
+    private CameraFollow cameraFollow;
+
+    private ScoreHandler scoreHandler;
+
+    private bool isResetting = false;
+
+    public ResetHandler(PlayerMovement playerMovement, CameraFollow cameraFollow, ScoreHandler scoreHandler) {
+        this.playerMovement = playerMovement;
+        this.cameraFollow = cameraFollow;
+        this.scoreHandler = scoreHandler;
+    }
+
+    public bool IsResetting() {
+        return isResetting;
+    }
+
+    public void InitializeGame() {
+        playerMovement.enabled = false;
+    }
+
+    public void StartGame() {
+        if (!isResetting) {
+            playerMovement.enabled = true;
         }
     }
 
-    public void EndGame(bool won) {
-        if (!gameStopped) {
-            gameStopped = true;
-            playerMovement.enabled = false;
-            cameraFollow.enabled = false;
-            this.enabled = false;
-
-            if (score > topScore) {
-                topScore = score;
-            }
-
-            StartCoroutine(ResetGame(won));
+    public IEnumerator ResetGame() {
+        if (isResetting) {
+            yield break;
         }
-    }
+        isResetting = true;
+        playerMovement.enabled = false;
+        cameraFollow.enabled = false;
+        
+        yield return new WaitForSeconds(1.5f);
 
-    private IEnumerator ResetGame(bool won) {
-        yield return new WaitForSeconds(2);
-        playerMovement.resetToPos(startPos);
+        playerMovement.ResetPos();
         cameraFollow.enabled = true;
-        setTitleScreen(won);
-        this.enabled = true;
+        scoreHandler.ResetScore();
+        isResetting = false;
     }
 }
