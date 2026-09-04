@@ -3,13 +3,16 @@ using TMPro;
 
 public class DescriptionDisplay : MonoBehaviour
 {
+    [SerializeField]
     private TMP_Text display;
 
-    private string description = "Your Best Score: {0}/nMove left with A or <= and right with D or =>";
+    private string description = "Your Best Score: {0}\nMove left with A or <= and right with D or =>";
 
-    private void Awake()
+    private void OnValidate()
     {
-        display = GetComponent<TMP_Text>();
+        if (display == null) {
+            display = GetComponent<TMP_Text>();
+        }
     }
 
     public void SetDescription(int bestScore)

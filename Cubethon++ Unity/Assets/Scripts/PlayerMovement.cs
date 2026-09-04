@@ -3,19 +3,25 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField]
     private InputAction moveAction;
 
+    [SerializeField]
     private Rigidbody rigidBody;
 
     private float forwardSpeed = 5;
     private const float movementSpeed = 5;
     private Vector3 startPos;
 
+    private void OnValidate() {
+        if (rigidBody == null) {
+            rigidBody = GetComponent<Rigidbody>();
+        }
+    }
+
     private void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
-        rigidBody = GetComponent<Rigidbody>();
-
         startPos = rigidBody.position;
     }
 
@@ -29,11 +35,7 @@ public class PlayerMovement : MonoBehaviour
         rigidBody.linearVelocity = new Vector3(xSpeed, rigidBody.linearVelocity.y, forwardSpeed);
     }
 
-    public Vector3 GetPos() {
-        return rigidBody.position;
-    }
-
-    public void ResetPos() {
+    public void ResetKinematics() {
         rigidBody.position = startPos;
         rigidBody.linearVelocity = Vector3.zero;
         rigidBody.rotation = Quaternion.identity;

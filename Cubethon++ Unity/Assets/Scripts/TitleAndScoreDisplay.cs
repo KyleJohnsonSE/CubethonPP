@@ -3,15 +3,15 @@ using TMPro;
 
 public class TitleAndScoreDisplay : MonoBehaviour
 {
+    [SerializeField]
     private TMP_Text display;
 
-    private string title;
+    private string title = "Hole In The Wall";
 
-    private void Awake()
-    {
-        display = GetComponent<TMP_Text>();
-
-        title = display.text;
+    private void OnValidate() {
+        if (display == null) {
+            display = GetComponent<TMP_Text>();
+        }
     }
 
     public void SetTitle()

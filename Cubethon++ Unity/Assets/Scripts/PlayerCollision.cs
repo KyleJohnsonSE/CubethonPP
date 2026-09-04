@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour
 {
-    private GameManager gameManager;
+    [SerializeField]
+    private GameStateManager gameStateManager;
 
-    private void Start() {
-        gameManager = FindAnyObjectByType<GameManager>();
+    private void OnValidate() {
+        if (gameStateManager == null) {
+            gameStateManager = FindAnyObjectByType<GameStateManager>();
+        }
     }
 
     private void OnCollisionEnter (Collision collisionInfo)
     {
         // Ends the game when colliding with an obstacle
-        if (collisionInfo.collider.tag == "Obstacle")
+        if (collisionInfo.gameObject.layer == LayerMask.NameToLayer("Obstacles"))
         {
-            gameManager.ResetGame();
+            gameStateManager.EndGame();
         }
     }
 }

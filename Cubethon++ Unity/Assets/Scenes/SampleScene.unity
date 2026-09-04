@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &20956814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 20956816}
+  - component: {fileID: 20956815}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &20956815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20956814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb75e6af82900ace892f5a18f1758ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  titleAndScoreDisplay: {fileID: 427954267}
+--- !u!4 &20956816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20956814}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &105837999
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -542,6 +587,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ffefa2f69d13e3d98f68c079e928d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  focus: {fileID: 1925799608}
+  useOffset: 0
+  offset: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +867,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c594ba2f546a63d0a029b90e2e3d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleAndScoreDisplay
+  display: {fileID: 427954265}
 --- !u!1001 &541498896
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1127,26 +1176,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1194346985}
-  - component: {fileID: 1194346984}
+  - component: {fileID: 1194346986}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameStateManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1194346984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194346983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e99f5ff968527e7568f28fca016a2e2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!4 &1194346985
 Transform:
   m_ObjectHideFlags: 0
@@ -1162,6 +1199,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1194346986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194346983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5869d13530b5867f822c7878c904657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameStateManager
+  moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2e331689-7346-46c4-b3ae-9bce30b098ca
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+    m_Priority: 0
+  playerMovement: {fileID: 1925799610}
+  cameraFollow: {fileID: 330585548}
+  scoreManager: {fileID: 20956815}
+  descriptionDisplay: {fileID: 1947586875}
 --- !u!1001 &1670130113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1403,6 +1466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741f8212c7d4adbb696364c03bb05708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  gameStateManager: {fileID: 0}
 --- !u!114 &1925799610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,6 +1479,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8acddea6cbbe57fa389b1e7bd9a6da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
+  moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 62d7dfc4-10b3-4e9e-8a14-f9378c15eade
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+    m_Priority: 0
+  rigidBody: {fileID: 1925799611}
 --- !u!54 &1925799611
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1510,6 +1585,7 @@ GameObject:
   - component: {fileID: 1947586872}
   - component: {fileID: 1947586874}
   - component: {fileID: 1947586873}
+  - component: {fileID: 1947586875}
   m_Layer: 5
   m_Name: Description
   m_TagString: Untagged
@@ -1638,6 +1714,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1947586871}
   m_CullTransparentMesh: 1
+--- !u!114 &1947586875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947586871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09536fb7dc82bb13fae62826b673242a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  display: {fileID: 1947586873}
 --- !u!1001 &1962017320
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2173,3 +2262,4 @@ SceneRoots:
   - {fileID: 140844647}
   - {fileID: 865747075}
   - {fileID: 1194346985}
+  - {fileID: 20956816}
